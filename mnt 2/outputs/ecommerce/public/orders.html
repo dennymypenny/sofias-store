@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Track Order — Sofia's Store</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;800&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0a080f;--bg2:#130d1c;--bg3:#1b1226;--border:rgba(255,255,255,.07);--accent:#4EC9F0;--accent2:#28B5E0;--pink:#F9A8C9;--pink2:#F070B2;--white:#fdf0f8;--muted:#9d8aaa;--serif:'Playfair Display',Georgia,serif;--sans:'Inter','Segoe UI',sans-serif;--radius:12px}
+body{font-family:var(--sans);background:var(--bg);color:var(--white);min-height:100vh}
+a{text-decoration:none;color:inherit}
+nav{position:sticky;top:0;z-index:500;background:rgba(13,17,23,.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 1.5rem;height:62px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:var(--serif);font-size:1.3rem;font-weight:800}.logo span{color:var(--accent)}
+.nav-btn{display:flex;align-items:center;gap:6px;padding:.45rem .9rem;border-radius:8px;font-size:.85rem;font-weight:500;cursor:pointer;background:transparent;border:1px solid var(--border);color:var(--white);transition:.2s}
+.nav-btn:hover{background:var(--bg3)}
+.wrap{max-width:560px;margin:0 auto;padding:3rem 1.5rem}
+.page-title{font-family:var(--serif);font-size:2rem;font-weight:800;margin-bottom:.35rem}
+.page-sub{color:var(--muted);font-size:.9rem;margin-bottom:2rem}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1.75rem;margin-bottom:1.25rem}
+.flbl{display:block;font-size:.8rem;font-weight:600;color:var(--muted);margin-bottom:.4rem;letter-spacing:.04em}
+.finp{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:9px;color:var(--white);padding:.72rem 1rem;font-size:.93rem;font-family:var(--sans);outline:none;transition:.25s;margin-bottom:1rem}
+.finp:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(78,201,240,.15)}
+.finp::placeholder{color:rgba(139,148,158,.5)}
+.btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:.82rem;border-radius:50px;font-weight:600;font-size:.93rem;cursor:pointer;border:none;transition:.25s;font-family:var(--sans);width:100%}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--pink));color:#fff}
+.btn-primary:hover{background:linear-gradient(135deg,var(--accent2),var(--pink2))}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed}
+/* ORDER RESULT */
+.status-badge{display:inline-flex;align-items:center;gap:5px;padding:.3rem .8rem;border-radius:50px;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.s-paid,.s-delivered{background:rgba(22,163,74,.15);border:1px solid rgba(22,163,74,.3);color:#4ade80}
+.s-processing,.s-shipped{background:rgba(78,201,240,.15);border:1px solid rgba(78,201,240,.3);color:var(--accent)}
+.s-pending{background:rgba(217,119,6,.15);border:1px solid rgba(217,119,6,.3);color:#fbbf24}
+.s-cancelled,.s-refunded{background:rgba(220,38,38,.15);border:1px solid rgba(220,38,38,.3);color:#f87171}
+.item-row{display:flex;justify-content:space-between;align-items:center;padding:.8rem 0;border-bottom:1px solid var(--border);font-size:.88rem}
+.item-row:last-child{border-bottom:none}
+.err{background:rgba(220,38,38,.1);border:1px solid rgba(220,38,38,.3);border-radius:10px;padding:1rem;color:#f87171;font-size:.88rem;margin-top:.75rem}
+</style>
+</head>
+<body>
+<nav>
+  <a href="/" class="logo">Sofia's<span> Store</span></a>
+  <a href="/" class="nav-btn">← Back to Shop</a>
+</nav>
+
+<div class="wrap">
+  <div class="page-title">Track Your Order</div>
+  <p class="page-sub">Enter your email and order number to view your order status.</p>
+
+  <div class="card">
+    <label class="flbl">Email Address</label>
+    <input class="finp" type="email" id="email" placeholder="you@example.com"/>
+    <label class="flbl">Order Number</label>
+    <input class="finp" type="text" id="orderNum" placeholder="ORD-240101-1234" oninput="this.value=this.value.toUpperCase()"/>
+    <button class="btn btn-primary" id="lookupBtn" onclick="lookup()">🔍 &nbsp;Find My Order</button>
+    <div id="err" class="err" style="display:none"></div>
+  </div>
+
+  <div id="result" style="display:none"></div>
+</div>
+
+<script>
+async function lookup() {
+  const email  = document.getElementById('email').value.trim();
+  const num    = document.getElementById('orderNum').value.trim();
+  const btn    = document.getElementById('lookupBtn');
+  const errEl  = document.getElementById('err');
+
+  errEl.style.display = 'none';
+  if (!email || !num) { errEl.textContent='Please fill in both fields.';errEl.style.display='block';return; }
+
+  btn.disabled=true; btn.textContent='Searching…';
+
+  try {
+    const res  = await fetch(`/api/orders/lookup?email=${encodeURIComponent(email)}&order_number=${encodeURIComponent(num)}`);
+    const data = await res.json();
+    btn.disabled=false; btn.innerHTML='🔍 &nbsp;Find My Order';
+
+    if (!res.ok) { errEl.textContent = data.error||'Order not found.'; errEl.style.display='block'; return; }
+    renderOrder(data.order);
+  } catch(e) {
+    btn.disabled=false; btn.innerHTML='🔍 &nbsp;Find My Order';
+    errEl.textContent='Network error. Please try again.'; errEl.style.display='block';
+  }
+}
+
+function renderOrder(order) {
+  const statusClass = 's-' + order.status;
+  const statusLabel = order.status.charAt(0).toUpperCase() + order.status.slice(1);
+
+  document.getElementById('result').style.display='block';
+  document.getElementById('result').innerHTML = `
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.25rem;flex-wrap:wrap;gap:.75rem">
+        <div>
+          <div style="font-family:var(--serif);font-size:1.2rem;font-weight:700">${order.order_number}</div>
+          <div style="font-size:.8rem;color:var(--muted);margin-top:.25rem">${new Date(order.created_at).toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})}</div>
+        </div>
+        <span class="status-badge ${statusClass}">${statusLabel}</span>
+      </div>
+
+      <div style="font-size:.85rem;color:var(--muted);margin-bottom:1.25rem">
+        📧 ${order.customer_email}
+        ${order.shipping_address ? `<br>📍 ${order.shipping_address}` : ''}
+      </div>
+
+      ${order.items && order.items.length ? order.items.map(i => `
+        <div class="item-row">
+          <div>
+            <div style="font-weight:600">${i.name}</div>
+            <div style="color:var(--muted);font-size:.8rem">Qty: ${i.quantity} · $${(i.price/100).toFixed(2)} each</div>
+          </div>
+          <div style="font-weight:600">$${(i.subtotal/100).toFixed(2)}</div>
+        </div>
+      `).join('') : ''}
+
+      <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border)">
+        ${order.shipping > 0 ? `<div style="display:flex;justify-content:space-between;font-size:.87rem;color:var(--muted);margin-bottom:.4rem"><span>Shipping</span><span>${order.shipping_formatted}</span></div>` : ''}
+        ${order.tax > 0 ? `<div style="display:flex;justify-content:space-between;font-size:.87rem;color:var(--muted);margin-bottom:.4rem"><span>Tax</span><span>${order.tax_formatted}</span></div>` : ''}
+        <div style="display:flex;justify-content:space-between;font-weight:700;font-size:1rem">
+          <span>Total</span><span>${order.total_formatted}</span>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// Allow Enter key
+document.addEventListener('keydown', e => { if (e.key==='Enter') lookup(); });
+</script>
+</body>
+</html>

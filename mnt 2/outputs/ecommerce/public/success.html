@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Order Confirmed — Sofia's Store</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;800&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0a080f;--bg2:#130d1c;--bg3:#1b1226;--border:rgba(255,255,255,.07);--accent:#4EC9F0;--accent2:#28B5E0;--pink:#F9A8C9;--pink2:#F070B2;--green:#4ade80;--white:#fdf0f8;--muted:#9d8aaa;--serif:'Playfair Display',Georgia,serif;--sans:'Inter','Segoe UI',sans-serif;--radius:12px}
+body{font-family:var(--sans);background:var(--bg);color:var(--white);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;max-width:560px;width:100%;padding:2.5rem}
+.check{width:72px;height:72px;border-radius:50%;background:rgba(22,163,74,.15);border:2px solid rgba(22,163,74,.4);display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 1.5rem}
+.title{font-family:var(--serif);font-size:1.8rem;font-weight:800;text-align:center;margin-bottom:.5rem}
+.sub{color:var(--muted);text-align:center;font-size:.92rem;margin-bottom:2rem;line-height:1.6}
+.order-num{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;text-align:center;margin-bottom:1.5rem}
+.order-num label{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+.order-num strong{display:block;font-family:var(--serif);font-size:1.3rem;font-weight:700;margin-top:.25rem}
+.items-list{border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:1.5rem}
+.item-row{display:flex;justify-content:space-between;align-items:center;padding:.85rem 1.1rem;border-bottom:1px solid var(--border);font-size:.88rem}
+.item-row:last-child{border-bottom:none}
+.item-row span{color:var(--muted)}
+.totals{background:var(--bg3);border-radius:10px;padding:1rem 1.25rem;margin-bottom:1.5rem}
+.tot-row{display:flex;justify-content:space-between;font-size:.88rem;color:var(--muted);margin-bottom:.5rem}
+.tot-row:last-child{margin-bottom:0;font-weight:700;font-size:1rem;color:var(--white);padding-top:.5rem;border-top:1px solid var(--border);margin-top:.5rem}
+.btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:.85rem;border-radius:50px;font-weight:600;font-size:.95rem;cursor:pointer;border:none;transition:.25s;font-family:var(--sans);width:100%;text-decoration:none;margin-bottom:.6rem}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--pink));color:#fff}
+.btn-primary:hover{background:linear-gradient(135deg,var(--accent2),var(--pink2))}
+.btn-outline{background:transparent;color:var(--white);border:1.5px solid rgba(255,255,255,.18)}
+.btn-outline:hover{background:rgba(255,255,255,.07)}
+.loading{text-align:center;color:var(--muted);padding:2rem}
+</style>
+</head>
+<body>
+<div class="card" id="card">
+  <div class="loading" id="loading">Loading your order…</div>
+</div>
+
+<script>
+async function load() {
+  const params     = new URLSearchParams(location.search);
+  const session_id = params.get('session_id');
+
+  if (!session_id) {
+    renderError('No order session found.');
+    return;
+  }
+
+  // Clear the cart
+  await fetch('/api/cart/clear', { method:'DELETE' }).catch(()=>{});
+
+  try {
+    const res  = await fetch(`/api/checkout/order?session_id=${session_id}`);
+    const data = await res.json();
+    if (!res.ok) { renderError(data.error || 'Order not found'); return; }
+    renderOrder(data.order);
+  } catch(e) {
+    renderError('Unable to load order details.');
+  }
+}
+
+function renderOrder(order) {
+  document.getElementById('card').innerHTML = `
+    <div class="check">✅</div>
+    <div class="title">Order Confirmed!</div>
+    <p class="sub">
+      Thank you, <strong>${order.customer_name}</strong>!<br>
+      A confirmation will be sent to <strong>${order.customer_email}</strong>.
+    </p>
+
+    <div class="order-num">
+      <label>Order Number</label>
+      <strong>${order.order_number}</strong>
+    </div>
+
+    ${order.items && order.items.length ? `
+    <div class="items-list">
+      ${order.items.map(i => `
+        <div class="item-row">
+          <div>
+            <div style="font-weight:600">${i.name}</div>
+            <span>Qty: ${i.quantity}</span>
+          </div>
+          <div style="font-weight:600">$${(i.subtotal/100).toFixed(2)}</div>
+        </div>
+      `).join('')}
+    </div>` : ''}
+
+    <div class="totals">
+      ${order.shipping > 0 ? `<div class="tot-row"><span>Shipping</span><span>${order.shipping_formatted}</span></div>` : `<div class="tot-row"><span>Shipping</span><span>Free</span></div>`}
+      ${order.tax > 0 ? `<div class="tot-row"><span>Tax</span><span>${order.tax_formatted}</span></div>` : ''}
+      <div class="tot-row"><span>Total Charged</span><span>${order.total_formatted}</span></div>
+    </div>
+
+    <a href="/" class="btn btn-primary">🛍 Continue Shopping</a>
+    <a href="/orders.html" class="btn btn-outline">📦 Track Your Order</a>
+  `;
+}
+
+function renderError(msg) {
+  document.getElementById('card').innerHTML = `
+    <div style="text-align:center;padding:1.5rem">
+      <div style="font-size:2.5rem;margin-bottom:1rem">⚠️</div>
+      <div style="font-family:var(--serif);font-size:1.3rem;font-weight:700;margin-bottom:.5rem">Something went wrong</div>
+      <div style="color:var(--muted);margin-bottom:1.5rem">${msg}</div>
+      <a href="/" class="btn btn-primary" style="display:flex">← Back to Store</a>
+    </div>
+  `;
+}
+
+load();
+</script>
+</body>
+</html>

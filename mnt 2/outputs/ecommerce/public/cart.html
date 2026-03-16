@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Cart — Sofia's Store</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;800&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0a080f;--bg2:#130d1c;--bg3:#1b1226;--border:rgba(255,255,255,.07);--accent:#4EC9F0;--accent2:#28B5E0;--pink:#F9A8C9;--pink2:#F070B2;--red:#f87171;--green:#4ade80;--white:#fdf0f8;--muted:#9d8aaa;--serif:'Playfair Display',Georgia,serif;--sans:'Inter','Segoe UI',sans-serif;--radius:12px;--shadow:0 8px 32px rgba(0,0,0,.6)}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--white);min-height:100vh}
+a{text-decoration:none;color:inherit}
+nav{position:sticky;top:0;z-index:500;background:rgba(10,8,15,.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 1.5rem;height:62px;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.logo{font-family:var(--serif);font-size:1.3rem;font-weight:800}.logo span{color:var(--accent)}
+.nav-btn{display:flex;align-items:center;gap:6px;padding:.45rem .9rem;border-radius:8px;font-size:.85rem;font-weight:500;cursor:pointer;background:transparent;border:1px solid var(--border);color:var(--white);transition:.2s}
+.nav-btn:hover{background:var(--bg3)}
+.sec{padding:3rem 1.5rem;max-width:1100px;margin:0 auto}
+.page-title{font-family:var(--serif);font-size:2rem;font-weight:800;margin-bottom:.25rem}
+.page-sub{color:var(--muted);font-size:.9rem;margin-bottom:2rem}
+.cart-layout{display:grid;grid-template-columns:1fr 340px;gap:1.75rem;align-items:start}
+/* ITEMS */
+.cart-items{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.cart-item{display:flex;gap:1.1rem;padding:1.25rem 1.4rem;border-bottom:1px solid var(--border);align-items:flex-start;transition:background .2s}
+.cart-item:last-child{border-bottom:none}
+.cart-item:hover{background:var(--bg3)}
+.item-img{width:80px;height:80px;border-radius:10px;background:var(--bg3);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:2rem;overflow:hidden}
+.item-img img{width:100%;height:100%;object-fit:cover}
+.item-info{flex:1;min-width:0}
+.item-name{font-weight:600;font-size:.95rem;margin-bottom:.25rem}
+.item-meta{font-size:.8rem;color:var(--muted);margin-bottom:.75rem}
+.qty-row{display:flex;align-items:center;gap:.6rem}
+.qty-btn{width:28px;height:28px;border-radius:7px;background:var(--bg3);border:1px solid var(--border);color:var(--white);cursor:pointer;font-size:.95rem;display:flex;align-items:center;justify-content:center;transition:.2s}
+.qty-btn:hover{border-color:var(--accent);color:var(--accent)}
+.qty-num{font-weight:600;font-size:.95rem;min-width:24px;text-align:center}
+.item-price{text-align:right;flex-shrink:0}
+.item-subtotal{font-family:var(--serif);font-size:1.1rem;font-weight:700;margin-bottom:.5rem}
+.remove-btn{font-size:.75rem;color:var(--muted);cursor:pointer;transition:.2s;background:none;border:none;font-family:var(--sans)}
+.remove-btn:hover{color:var(--red)}
+/* SUMMARY */
+.summary{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;position:sticky;top:80px}
+.summary h3{font-family:var(--serif);font-size:1.2rem;font-weight:700;margin-bottom:1.25rem;padding-bottom:.85rem;border-bottom:1px solid var(--border)}
+.sum-row{display:flex;justify-content:space-between;font-size:.9rem;margin-bottom:.7rem;color:var(--muted)}
+.sum-row.total{font-weight:700;font-size:1.1rem;color:var(--white);padding-top:.75rem;border-top:1px solid var(--border);margin-top:.75rem}
+.btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:.85rem 1.5rem;border-radius:50px;font-weight:600;font-size:.95rem;cursor:pointer;border:none;transition:.25s;font-family:var(--sans);width:100%;margin-top:1rem}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--pink));color:#fff;box-shadow:0 6px 24px rgba(249,168,201,.25)}
+.btn-primary:hover{background:linear-gradient(135deg,var(--accent2),var(--pink2))}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed}
+.btn-outline{background:transparent;color:var(--white);border:1.5px solid rgba(255,255,255,.18);margin-top:.6rem}
+.btn-outline:hover{background:rgba(255,255,255,.07)}
+/* EMPTY */
+.empty{text-align:center;padding:4rem 1rem}
+.empty .ico{font-size:3.5rem;margin-bottom:1rem}
+.empty h3{font-family:var(--serif);font-size:1.5rem;margin-bottom:.6rem}
+.empty p{color:var(--muted);margin-bottom:1.75rem}
+/* LOADING */
+.loading{text-align:center;padding:3rem;color:var(--muted)}
+/* TOAST */
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:.85rem 1.25rem;font-size:.87rem;font-weight:500;z-index:1000;transform:translateY(20px);opacity:0;transition:.3s;box-shadow:var(--shadow)}
+.toast.show{transform:translateY(0);opacity:1}
+.trust-badge{display:flex;align-items:center;gap:.6rem;font-size:.78rem;color:var(--muted);margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border)}
+@media(max-width:800px){.cart-layout{grid-template-columns:1fr}.summary{position:static}}
+@media(max-width:480px){.sec{padding:2rem 1rem}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="/" class="logo">Sofia's<span> Store</span></a>
+  <div style="display:flex;gap:.5rem">
+    <a href="/" class="nav-btn">← Continue Shopping</a>
+  </div>
+</nav>
+
+<div class="sec">
+  <div class="page-title">Shopping Cart</div>
+  <div class="page-sub" id="cartSub">Loading…</div>
+
+  <div id="emptyState" class="empty" style="display:none">
+    <div class="ico">🛒</div>
+    <h3>Your cart is empty</h3>
+    <p>Looks like you haven't added anything yet.</p>
+    <a href="/" class="btn btn-primary" style="display:inline-flex;width:auto;padding:.8rem 2rem">Browse Products</a>
+  </div>
+
+  <div id="loadingState" class="loading">Loading cart…</div>
+
+  <div id="cartLayout" class="cart-layout" style="display:none">
+    <div>
+      <div class="cart-items" id="cartItems"></div>
+    </div>
+    <div class="summary">
+      <h3>Order Summary</h3>
+      <div class="sum-row"><span>Subtotal</span><span id="sumSubtotal">—</span></div>
+      <div class="sum-row" id="shippingRow"><span>Shipping</span><span id="sumShipping">Free</span></div>
+      <div class="sum-row" id="taxRow" style="display:none"><span>Tax</span><span id="sumTax">—</span></div>
+      <div class="sum-row total"><span>Total</span><span id="sumTotal">—</span></div>
+      <button class="btn btn-primary" id="checkoutBtn" onclick="checkout()">
+        🔒 Proceed to Checkout
+      </button>
+      <a href="/" class="btn btn-outline">← Keep Shopping</a>
+      <div class="trust-badge">
+        🔒 Secure checkout via Stripe &nbsp;·&nbsp; 🚚 Fast delivery
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+async function loadCart() {
+  const res  = await fetch('/api/cart');
+  const data = await res.json();
+
+  document.getElementById('loadingState').style.display = 'none';
+
+  if (!data.items || data.items.length === 0) {
+    document.getElementById('emptyState').style.display  = 'block';
+    document.getElementById('cartLayout').style.display  = 'none';
+    document.getElementById('cartSub').textContent = '0 items';
+    return;
+  }
+
+  document.getElementById('cartSub').textContent = `${data.item_count} item${data.item_count!==1?'s':''}`;
+  document.getElementById('cartLayout').style.display = 'grid';
+
+  // Items
+  document.getElementById('cartItems').innerHTML = data.items.map(item => `
+    <div class="cart-item" id="item-${item.product_id}">
+      <div class="item-img">
+        ${item.image_url ? `<img src="${item.image_url}" alt="${item.name}"/>` : '📦'}
+      </div>
+      <div class="item-info">
+        <div class="item-name">${item.name}</div>
+        <div class="item-meta">${item.price_formatted} each</div>
+        <div class="qty-row">
+          <button class="qty-btn" onclick="updateQty(${item.product_id}, ${item.quantity - 1})">−</button>
+          <span class="qty-num" id="qty-${item.product_id}">${item.quantity}</span>
+          <button class="qty-btn" onclick="updateQty(${item.product_id}, ${item.quantity + 1})">+</button>
+        </div>
+      </div>
+      <div class="item-price">
+        <div class="item-subtotal">${item.subtotal_formatted}</div>
+        <button class="remove-btn" onclick="removeItem(${item.product_id})">Remove</button>
+      </div>
+    </div>
+  `).join('');
+
+  // Totals
+  document.getElementById('sumSubtotal').textContent = data.subtotal_formatted;
+  document.getElementById('sumShipping').textContent = data.shipping > 0 ? data.shipping_formatted : 'Free';
+  document.getElementById('sumTotal').textContent    = data.total_formatted;
+  if (data.tax > 0) {
+    document.getElementById('taxRow').style.display = 'flex';
+    document.getElementById('sumTax').textContent   = data.tax_formatted;
+  }
+}
+
+async function updateQty(product_id, quantity) {
+  const res  = await fetch('/api/cart/update', { method:'PATCH', headers:{'Content-Type':'application/json'}, body: JSON.stringify({product_id, quantity}) });
+  const data = await res.json();
+  if (!res.ok) { toast(data.error||'Error'); return; }
+  if (quantity <= 0) {
+    document.getElementById(`item-${product_id}`)?.remove();
+  } else {
+    document.getElementById(`qty-${product_id}`).textContent = quantity;
+  }
+  document.getElementById('sumSubtotal').textContent = data.subtotal_formatted || '—';
+  document.getElementById('sumTotal').textContent    = data.total_formatted    || '—';
+  const cnt = data.item_count;
+  document.getElementById('cartSub').textContent = `${cnt} item${cnt!==1?'s':''}`;
+  if (!cnt) loadCart(); // refresh to show empty state
+}
+
+async function removeItem(product_id) {
+  await fetch(`/api/cart/remove/${product_id}`, { method:'DELETE' });
+  loadCart();
+  toast('Item removed');
+}
+
+async function checkout() {
+  const btn = document.getElementById('checkoutBtn');
+  btn.disabled = true;
+  btn.textContent = 'Redirecting…';
+  try {
+    const res  = await fetch('/api/checkout/session', { method:'POST', headers:{'Content-Type':'application/json'} });
+    const data = await res.json();
+    if (!res.ok) { toast(data.error||'Checkout failed'); btn.disabled=false; btn.textContent='🔒 Proceed to Checkout'; return; }
+    window.location.href = data.url;
+  } catch(e) { toast('Network error'); btn.disabled=false; btn.textContent='🔒 Proceed to Checkout'; }
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+loadCart();
+</script>
+</body>
+</html>
