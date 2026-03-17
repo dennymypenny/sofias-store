@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Order Confirmed â Sofia's Store</title>
+<title>Order Confirmed &#8212; Sofia's Store</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -33,7 +33,7 @@ body{font-family:var(--sans);background:var(--bg2);color:var(--text);min-height:
 </head>
 <body>
 <div class="card" id="card">
-  <div class="loading" id="loading">Loading your orderâ¦</div>
+  <div class="loading" id="loading">Loading your order&#8230;</div>
 </div>
 
 <script>
@@ -54,7 +54,7 @@ async function load() {
 
 function renderOrder(order) {
   document.getElementById('card').innerHTML = `
-    <div class="check">â</div>
+    <div class="check">&#9989;</div>
     <div class="title">Order Confirmed!</div>
     <p class="sub">
       Thank you, <strong>${order.customer_name}</strong>!<br>
@@ -81,18 +81,18 @@ function renderOrder(order) {
       ${order.tax > 0 ? `<div class="tot-row"><span>Tax</span><span>${order.tax_formatted}</span></div>` : ''}
       <div class="tot-row"><span>Total Charged</span><span>${order.total_formatted}</span></div>
     </div>
-    <a href="/" class="btn btn-primary">ð Continue Shopping</a>
-    <a href="/orders.html" class="btn btn-outline">ð¦ Track Your Order</a>
+    <a href="/" class="btn btn-primary">&#128717; Continue Shopping</a>
+    <a href="/orders.html" class="btn btn-outline">&#128230; Track Your Order</a>
   `;
 }
 
 function renderError(msg) {
   document.getElementById('card').innerHTML = `
     <div style="text-align:center;padding:1.5rem">
-      <div style="font-size:2.5rem;margin-bottom:1rem">â ï¸</div>
+      <div style="font-size:2.5rem;margin-bottom:1rem">&#9888;&#65039;</div>
       <div style="font-size:1.25rem;font-weight:700;margin-bottom:.5rem;color:var(--text)">Something went wrong</div>
       <div style="color:var(--muted);margin-bottom:1.5rem">${msg}</div>
-      <a href="/" class="btn btn-primary" style="display:flex">â Back to Store</a>
+      <a href="/" class="btn btn-primary" style="display:flex">&#8592; Back to Store</a>
     </div>
   `;
 }
