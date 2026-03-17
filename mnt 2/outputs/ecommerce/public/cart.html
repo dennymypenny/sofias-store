@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Cart â Sofia's Store</title>
+<title>Cart &#8212; Sofia's Store</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -70,22 +70,22 @@ nav{position:sticky;top:0;z-index:500;background:rgba(255,255,255,.9);backdrop-f
     Sofia's Store
   </a>
   <div style="display:flex;gap:.5rem">
-    <a href="/" class="nav-btn">â Continue Shopping</a>
+    <a href="/" class="nav-btn">&#8592; Continue Shopping</a>
   </div>
 </nav>
 
 <div class="sec">
   <div class="page-title">Shopping Cart</div>
-  <div class="page-sub" id="cartSub">Loadingâ¦</div>
+  <div class="page-sub" id="cartSub">Loading&#8230;</div>
 
   <div id="emptyState" class="empty" style="display:none">
-    <div class="ico">ð</div>
+    <div class="ico">&#128722;</div>
     <h3>Your cart is empty</h3>
     <p>Looks like you haven't added anything yet.</p>
     <a href="/" class="btn btn-primary" style="display:inline-flex;width:auto;padding:.8rem 2rem;margin:0">Browse Products</a>
   </div>
 
-  <div id="loadingState" class="loading">Loading cartâ¦</div>
+  <div id="loadingState" class="loading">Loading cart&#8230;</div>
 
   <div id="cartLayout" class="cart-layout" style="display:none">
     <div>
@@ -93,16 +93,16 @@ nav{position:sticky;top:0;z-index:500;background:rgba(255,255,255,.9);backdrop-f
     </div>
     <div class="summary">
       <h3>Order Summary</h3>
-      <div class="sum-row"><span>Subtotal</span><span id="sumSubtotal">â</span></div>
+      <div class="sum-row"><span>Subtotal</span><span id="sumSubtotal">&#8212;</span></div>
       <div class="sum-row" id="shippingRow"><span>Shipping</span><span id="sumShipping">Free</span></div>
-      <div class="sum-row" id="taxRow" style="display:none"><span>Tax</span><span id="sumTax">â</span></div>
-      <div class="sum-row total"><span>Total</span><span id="sumTotal">â</span></div>
+      <div class="sum-row" id="taxRow" style="display:none"><span>Tax</span><span id="sumTax">&#8212;</span></div>
+      <div class="sum-row total"><span>Total</span><span id="sumTotal">&#8212;</span></div>
       <button class="btn btn-primary" id="checkoutBtn" onclick="checkout()">
-        ð Proceed to Checkout
+        &#128274; Proceed to Checkout
       </button>
-      <a href="/" class="btn btn-outline">â Keep Shopping</a>
+      <a href="/" class="btn btn-outline">&#8592; Keep Shopping</a>
       <div class="trust-badge">
-        ð Secure checkout via Stripe &nbsp;Â·&nbsp; ð Fast delivery
+        &#128274; Secure checkout via Stripe &nbsp;&#183;&nbsp; &#128666; Fast delivery
       </div>
     </div>
   </div>
@@ -126,13 +126,13 @@ async function loadCart() {
   document.getElementById('cartItems').innerHTML = data.items.map(item => `
     <div class="cart-item" id="item-${item.product_id}">
       <div class="item-img">
-        ${item.image_url ? `<img src="${item.image_url}" alt="${item.name}"/>` : 'ð¦'}
+        ${item.image_url ? `<img src="${item.image_url}" alt="${item.name}"/>` : '&#128230;'}
       </div>
       <div class="item-info">
         <div class="item-name">${item.name}</div>
         <div class="item-meta">${item.price_formatted} each</div>
         <div class="qty-row">
-          <button class="qty-btn" onclick="updateQty(${item.product_id}, ${item.quantity - 1})">â</button>
+          <button class="qty-btn" onclick="updateQty(${item.product_id}, ${item.quantity - 1})">&#8722;</button>
           <span class="qty-num" id="qty-${item.product_id}">${item.quantity}</span>
           <button class="qty-btn" onclick="updateQty(${item.product_id}, ${item.quantity + 1})">+</button>
         </div>
@@ -161,8 +161,8 @@ async function updateQty(product_id, quantity) {
   } else {
     document.getElementById(`qty-${product_id}`).textContent = quantity;
   }
-  document.getElementById('sumSubtotal').textContent = data.subtotal_formatted || 'â';
-  document.getElementById('sumTotal').textContent    = data.total_formatted    || 'â';
+  document.getElementById('sumSubtotal').textContent = data.subtotal_formatted || '&#8212;';
+  document.getElementById('sumTotal').textContent    = data.total_formatted    || '&#8212;';
   const cnt = data.item_count;
   document.getElementById('cartSub').textContent = `${cnt} item${cnt!==1?'s':''}`;
   if (!cnt) loadCart();
@@ -177,13 +177,13 @@ async function removeItem(product_id) {
 async function checkout() {
   const btn = document.getElementById('checkoutBtn');
   btn.disabled = true;
-  btn.textContent = 'Redirectingâ¦';
+  btn.textContent = 'Redirecting&#8230;';
   try {
     const res  = await fetch('/api/checkout/session', { method:'POST', headers:{'Content-Type':'application/json'} });
     const data = await res.json();
-    if (!res.ok) { toast(data.error||'Checkout failed'); btn.disabled=false; btn.textContent='ð Proceed to Checkout'; return; }
+    if (!res.ok) { toast(data.error||'Checkout failed'); btn.disabled=false; btn.textContent='&#128274; Proceed to Checkout'; return; }
     window.location.href = data.url;
-  } catch(e) { toast('Network error'); btn.disabled=false; btn.textContent='ð Proceed to Checkout'; }
+  } catch(e) { toast('Network error'); btn.disabled=false; btn.textContent='&#128274; Proceed to Checkout'; }
 }
 
 function toast(msg) {
