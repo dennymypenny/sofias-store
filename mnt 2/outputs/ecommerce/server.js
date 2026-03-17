@@ -89,16 +89,12 @@ async function start() {
   app.listen(PORT, () => {
     console.log(`\nð  Store running at http://localhost:${PORT}`);
     console.log(`ð  Admin dashboard: http://localhost:${PORT}/admin`);
+    console.log(`\nð  Admin email:    ${process.env.ADMIN_EMAIL || 'admin@yourstore.com'}`);
     console.log(`ð  Admin password: (see .env or default 'changeme123')\n`);
   });
 }
 
 start().catch(err => {
-  console.error('â Failed to start server:', err);
-  process.exit(1);
-});
-
-module.ex(err => {
   console.error('â Failed to start server:', err);
   process.exit(1);
 });
