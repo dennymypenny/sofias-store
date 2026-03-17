@@ -18,6 +18,9 @@ async function start() {
 
   // ── MIDDLEWARE ──────────────────────────────────────────────────────────────
 
+    // Trust Railway's reverse proxy so secure cookies work over HTTPS
+    app.set('trust proxy', 1);
+  
   // Raw body needed for Stripe webhook — must come BEFORE express.json()
   app.use('/api/checkout/webhook', express.raw({ type: 'application/json' }));
 
