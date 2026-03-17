@@ -1,5 +1,5 @@
 /**
- * server.js — Main Express application
+ * server.js â Main Express application
  */
 
 require('dotenv').config();
@@ -12,23 +12,29 @@ const app  = express();
 const PORT = process.env.PORT || 3000;
 
 async function start() {
-  // ── INIT DATABASE (must happen before routes handle requests) ───────────────
+  // ââ INIT DATABASE (must happen before routes handle requests) âââââââââââââââ
   const db = require('./db');
   await db.init();
 
-  // ── MIDDLEWARE ──────────────────────────────────────────────────────────────
+  // ââ MIDDLEWARE ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
-    // Trust Railway's reverse proxy so secure cookies work over HTTPS
-    app.set('trust proxy', 1);
-  
-  // Raw body needed for Stripe webhook — must come BEFORE express.json()
+  // Raw body needed for Stripe webhook â must come BEFORE express.json()
   app.use('/api/checkout/webhook', express.raw({ type: 'application/json' }));
+
+  // Trust Railway's reverse proxy so secure cookies work over HTTPS
+  app.set('trust proxy', 1);
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
-  app.use(express.static(path.join(__dirname, 'public')));
+  app.use(express.static(path.join(__dirname, 'public'), {
+    setHeaders: (res, filePath) => {
+      if (filePath.endsWith('.html')) {
+        res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      }
+    }
+  }));
 
-  // Session — using session-file-store (pure JS, no native compilation)
+  // Session â using session-file-store (pure JS, no native compilation)
   const FileStore = require('session-file-store')(session);
   const sessionsDir = path.join(__dirname, 'data', 'sessions');
   fs.mkdirSync(sessionsDir, { recursive: true });
@@ -50,7 +56,7 @@ async function start() {
     }
   }));
 
-  // ── ROUTES ──────────────────────────────────────────────────────────────────
+  // ââ ROUTES ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
   app.use('/api/products',  require('./routes/products'));
   app.use('/api/cart',      require('./routes/cart'));
@@ -58,7 +64,7 @@ async function start() {
   app.use('/api/orders',    require('./routes/orders'));
   app.use('/api/admin',     require('./routes/admin'));
 
-  // ── SPA FALLBACK ────────────────────────────────────────────────────────────
+  // ââ SPA FALLBACK ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
   app.get('*', (req, res) => {
     if (req.path.startsWith('/admin')) {
@@ -67,7 +73,7 @@ async function start() {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
   });
 
-  // ── ERROR HANDLER ───────────────────────────────────────────────────────────
+  // ââ ERROR HANDLER âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
   app.use((err, req, res, next) => {
     console.error(err.stack);
@@ -78,18 +84,22 @@ async function start() {
     res.status(status).json({ error: message });
   });
 
-  // ── START ───────────────────────────────────────────────────────────────────
+  // ââ START âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
   app.listen(PORT, () => {
-    console.log(`\n🛒  Store running at http://localhost:${PORT}`);
-    console.log(`🔐  Admin dashboard: http://localhost:${PORT}/admin`);
-    console.log(`\n📋  Admin email:    ${process.env.ADMIN_EMAIL || 'admin@yourstore.com'}`);
-    console.log(`📋  Admin password: (see .env or default 'changeme123')\n`);
+    console.log(`\nð  Store running at http://localhost:${PORT}`);
+    console.log(`ð  Admin dashboard: http://localhost:${PORT}/admin`);
+    console.log(`ð  Admin password: (see .env or default 'changeme123')\n`);
   });
 }
 
 start().catch(err => {
-  console.error('❌ Failed to start server:', err);
+  console.error('â Failed to start server:', err);
+  process.exit(1);
+});
+
+module.ex(err => {
+  console.error('â Failed to start server:', err);
   process.exit(1);
 });
 
