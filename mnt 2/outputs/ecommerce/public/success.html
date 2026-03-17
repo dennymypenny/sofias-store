@@ -3,52 +3,45 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Order Confirmed — Sofia's Store</title>
+<title>Order Confirmed â Sofia's Store</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#0a080f;--bg2:#130d1c;--bg3:#1b1226;--border:rgba(255,255,255,.07);--accent:#4EC9F0;--accent2:#28B5E0;--pink:#F9A8C9;--pink2:#F070B2;--green:#4ade80;--white:#fdf0f8;--muted:#9d8aaa;--serif:'Playfair Display',Georgia,serif;--sans:'Inter','Segoe UI',sans-serif;--radius:12px}
-body{font-family:var(--sans);background:var(--bg);color:var(--white);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem}
-.card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;max-width:560px;width:100%;padding:2.5rem}
-.check{width:72px;height:72px;border-radius:50%;background:rgba(22,163,74,.15);border:2px solid rgba(22,163,74,.4);display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 1.5rem}
-.title{font-family:var(--serif);font-size:1.8rem;font-weight:800;text-align:center;margin-bottom:.5rem}
-.sub{color:var(--muted);text-align:center;font-size:.92rem;margin-bottom:2rem;line-height:1.6}
-.order-num{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;text-align:center;margin-bottom:1.5rem}
-.order-num label{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
-.order-num strong{display:block;font-family:var(--serif);font-size:1.3rem;font-weight:700;margin-top:.25rem}
+:root{--bg:#fff;--bg2:#f9fafb;--bg3:#f3f4f6;--border:#e5e7eb;--accent:#2563eb;--accent2:#1d4ed8;--accent-light:#eff6ff;--text:#111827;--text2:#374151;--muted:#6b7280;--muted2:#9ca3af;--green:#22c55e;--sans:'Inter','Segoe UI',sans-serif;--radius:12px;--shadow:0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.06);--shadow-lg:0 4px 6px rgba(0,0,0,.05),0 10px 40px rgba(0,0,0,.08)}
+body{font-family:var(--sans);background:var(--bg2);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem}
+.card{background:#fff;border:1px solid var(--border);border-radius:20px;max-width:540px;width:100%;padding:2.5rem;box-shadow:var(--shadow-lg)}
+.check{width:72px;height:72px;border-radius:50%;background:#f0fdf4;border:2px solid #bbf7d0;display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 1.5rem}
+.title{font-size:1.75rem;font-weight:800;text-align:center;margin-bottom:.5rem;color:var(--text);letter-spacing:-.02em}
+.sub{color:var(--muted);text-align:center;font-size:.9rem;margin-bottom:2rem;line-height:1.65}
+.order-num{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;text-align:center;margin-bottom:1.5rem}
+.order-num label{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);font-weight:600}
+.order-num strong{display:block;font-size:1.25rem;font-weight:800;margin-top:.25rem;color:var(--text);letter-spacing:-.01em}
 .items-list{border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:1.5rem}
-.item-row{display:flex;justify-content:space-between;align-items:center;padding:.85rem 1.1rem;border-bottom:1px solid var(--border);font-size:.88rem}
+.item-row{display:flex;justify-content:space-between;align-items:center;padding:.85rem 1.1rem;border-bottom:1px solid var(--border);font-size:.875rem}
 .item-row:last-child{border-bottom:none}
 .item-row span{color:var(--muted)}
-.totals{background:var(--bg3);border-radius:10px;padding:1rem 1.25rem;margin-bottom:1.5rem}
-.tot-row{display:flex;justify-content:space-between;font-size:.88rem;color:var(--muted);margin-bottom:.5rem}
-.tot-row:last-child{margin-bottom:0;font-weight:700;font-size:1rem;color:var(--white);padding-top:.5rem;border-top:1px solid var(--border);margin-top:.5rem}
-.btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:.85rem;border-radius:50px;font-weight:600;font-size:.95rem;cursor:pointer;border:none;transition:.25s;font-family:var(--sans);width:100%;text-decoration:none;margin-bottom:.6rem}
-.btn-primary{background:linear-gradient(135deg,var(--accent),var(--pink));color:#fff}
-.btn-primary:hover{background:linear-gradient(135deg,var(--accent2),var(--pink2))}
-.btn-outline{background:transparent;color:var(--white);border:1.5px solid rgba(255,255,255,.18)}
-.btn-outline:hover{background:rgba(255,255,255,.07)}
+.totals{background:var(--bg2);border-radius:10px;padding:1rem 1.25rem;margin-bottom:1.5rem}
+.tot-row{display:flex;justify-content:space-between;font-size:.875rem;color:var(--muted);margin-bottom:.5rem}
+.tot-row:last-child{margin-bottom:0;font-weight:700;font-size:1rem;color:var(--text);padding-top:.5rem;border-top:1px solid var(--border);margin-top:.5rem}
+.btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:.85rem;border-radius:10px;font-weight:600;font-size:.9rem;cursor:pointer;border:none;transition:.2s;font-family:var(--sans);width:100%;text-decoration:none;margin-bottom:.6rem}
+.btn-primary{background:var(--accent);color:#fff;box-shadow:0 4px 14px rgba(37,99,235,.25)}
+.btn-primary:hover{background:var(--accent2)}
+.btn-outline{background:#fff;color:var(--text2);border:1.5px solid var(--border)}
+.btn-outline:hover{background:var(--bg2)}
 .loading{text-align:center;color:var(--muted);padding:2rem}
 </style>
 </head>
 <body>
 <div class="card" id="card">
-  <div class="loading" id="loading">Loading your order…</div>
+  <div class="loading" id="loading">Loading your orderâ¦</div>
 </div>
 
 <script>
 async function load() {
   const params     = new URLSearchParams(location.search);
   const session_id = params.get('session_id');
-
-  if (!session_id) {
-    renderError('No order session found.');
-    return;
-  }
-
-  // Clear the cart
+  if (!session_id) { renderError('No order session found.'); return; }
   await fetch('/api/cart/clear', { method:'DELETE' }).catch(()=>{});
-
   try {
     const res  = await fetch(`/api/checkout/order?session_id=${session_id}`);
     const data = await res.json();
@@ -61,49 +54,45 @@ async function load() {
 
 function renderOrder(order) {
   document.getElementById('card').innerHTML = `
-    <div class="check">✅</div>
+    <div class="check">â</div>
     <div class="title">Order Confirmed!</div>
     <p class="sub">
       Thank you, <strong>${order.customer_name}</strong>!<br>
       A confirmation will be sent to <strong>${order.customer_email}</strong>.
     </p>
-
     <div class="order-num">
       <label>Order Number</label>
       <strong>${order.order_number}</strong>
     </div>
-
     ${order.items && order.items.length ? `
     <div class="items-list">
       ${order.items.map(i => `
         <div class="item-row">
           <div>
-            <div style="font-weight:600">${i.name}</div>
+            <div style="font-weight:600;color:var(--text)">${i.name}</div>
             <span>Qty: ${i.quantity}</span>
           </div>
-          <div style="font-weight:600">$${(i.subtotal/100).toFixed(2)}</div>
+          <div style="font-weight:700;color:var(--text)">$${(i.subtotal/100).toFixed(2)}</div>
         </div>
       `).join('')}
     </div>` : ''}
-
     <div class="totals">
       ${order.shipping > 0 ? `<div class="tot-row"><span>Shipping</span><span>${order.shipping_formatted}</span></div>` : `<div class="tot-row"><span>Shipping</span><span>Free</span></div>`}
       ${order.tax > 0 ? `<div class="tot-row"><span>Tax</span><span>${order.tax_formatted}</span></div>` : ''}
       <div class="tot-row"><span>Total Charged</span><span>${order.total_formatted}</span></div>
     </div>
-
-    <a href="/" class="btn btn-primary">🛍 Continue Shopping</a>
-    <a href="/orders.html" class="btn btn-outline">📦 Track Your Order</a>
+    <a href="/" class="btn btn-primary">ð Continue Shopping</a>
+    <a href="/orders.html" class="btn btn-outline">ð¦ Track Your Order</a>
   `;
 }
 
 function renderError(msg) {
   document.getElementById('card').innerHTML = `
     <div style="text-align:center;padding:1.5rem">
-      <div style="font-size:2.5rem;margin-bottom:1rem">⚠️</div>
-      <div style="font-family:var(--serif);font-size:1.3rem;font-weight:700;margin-bottom:.5rem">Something went wrong</div>
+      <div style="font-size:2.5rem;margin-bottom:1rem">â ï¸</div>
+      <div style="font-size:1.25rem;font-weight:700;margin-bottom:.5rem;color:var(--text)">Something went wrong</div>
       <div style="color:var(--muted);margin-bottom:1.5rem">${msg}</div>
-      <a href="/" class="btn btn-primary" style="display:flex">← Back to Store</a>
+      <a href="/" class="btn btn-primary" style="display:flex">â Back to Store</a>
     </div>
   `;
 }
