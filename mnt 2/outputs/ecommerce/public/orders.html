@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Track Order â Sofia's Store</title>
+<title>Track Order &#8212; Sofia's Store</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -45,7 +45,7 @@ nav{position:sticky;top:0;z-index:500;background:rgba(255,255,255,.9);backdrop-f
     <div class="logo-icon">S</div>
     Sofia's Store
   </a>
-  <a href="/" class="nav-btn">â Back to Shop</a>
+  <a href="/" class="nav-btn">&#8592; Back to Shop</a>
 </nav>
 
 <div class="wrap">
@@ -57,7 +57,7 @@ nav{position:sticky;top:0;z-index:500;background:rgba(255,255,255,.9);backdrop-f
     <input class="finp" type="email" id="email" placeholder="you@example.com"/>
     <label class="flbl">Order Number</label>
     <input class="finp" type="text" id="orderNum" placeholder="ORD-240101-1234" oninput="this.value=this.value.toUpperCase()"/>
-    <button class="btn btn-primary" id="lookupBtn" onclick="lookup()">ð &nbsp;Find My Order</button>
+    <button class="btn btn-primary" id="lookupBtn" onclick="lookup()">&#128269; &nbsp;Find My Order</button>
     <div id="err" class="err" style="display:none"></div>
   </div>
 
@@ -72,15 +72,15 @@ async function lookup() {
   const errEl  = document.getElementById('err');
   errEl.style.display = 'none';
   if (!email || !num) { errEl.textContent='Please fill in both fields.';errEl.style.display='block';return; }
-  btn.disabled=true; btn.textContent='Searchingâ¦';
+  btn.disabled=true; btn.textContent='Searching&#8230;';
   try {
     const res  = await fetch(`/api/orders/lookup?email=${encodeURIComponent(email)}&order_number=${encodeURIComponent(num)}`);
     const data = await res.json();
-    btn.disabled=false; btn.innerHTML='ð &nbsp;Find My Order';
+    btn.disabled=false; btn.innerHTML='&#128269; &nbsp;Find My Order';
     if (!res.ok) { errEl.textContent = data.error||'Order not found.'; errEl.style.display='block'; return; }
     renderOrder(data.order);
   } catch(e) {
-    btn.disabled=false; btn.innerHTML='ð &nbsp;Find My Order';
+    btn.disabled=false; btn.innerHTML='&#128269; &nbsp;Find My Order';
     errEl.textContent='Network error. Please try again.'; errEl.style.display='block';
   }
 }
@@ -99,14 +99,14 @@ function renderOrder(order) {
         <span class="status-badge ${statusClass}">${statusLabel}</span>
       </div>
       <div style="font-size:.85rem;color:var(--muted);margin-bottom:1.25rem">
-        ð§ ${order.customer_email}
-        ${order.shipping_address ? `<br>ð ${order.shipping_address}` : ''}
+        &#128231; ${order.customer_email}
+        ${order.shipping_address ? `<br>&#128205; ${order.shipping_address}` : ''}
       </div>
       ${order.items && order.items.length ? order.items.map(i => `
         <div class="item-row">
           <div>
             <div style="font-weight:600;color:var(--text)">${i.name}</div>
-            <div style="color:var(--muted);font-size:.8rem">Qty: ${i.quantity} Â· $${(i.price/100).toFixed(2)} each</div>
+            <div style="color:var(--muted);font-size:.8rem">Qty: ${i.quantity} &#183; $${(i.price/100).toFixed(2)} each</div>
           </div>
           <div style="font-weight:700;color:var(--text)">$${(i.subtotal/100).toFixed(2)}</div>
         </div>
